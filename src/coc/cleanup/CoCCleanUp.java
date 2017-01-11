@@ -7,8 +7,6 @@ package coc.cleanup;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,6 +20,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  *
@@ -32,19 +31,22 @@ public class CoCCleanUp {
     private int notValid;
     private int valid;
 
+    private String errorMessage;
+
     private final boolean write;
     private final String newFileName;
     private Document newDoc;
     private Element cocs;
 
-    public CoCCleanUp (String newFileName, boolean write) {
-        notValid=0;
-        valid=0;
-        this.write=write;
-        this.newFileName=newFileName;
+    public CoCCleanUp(String newFileName, boolean write) {
+        notValid = 0;
+        valid = 0;
+        this.write = write;
+        this.newFileName = newFileName;
+        errorMessage = "";
     }
-    
-    public void cleanDocument(String filename) {
+
+    public int cleanDocument(String filename) {
         try {
 
             File xmlFile = new File(filename);
@@ -88,11 +90,17 @@ public class CoCCleanUp {
 
             System.out.println("\n-------------------------------------------\n");
 
+            return 0;
+
+        }catch (SAXParseException ex){
+            errorMessage = "\nAn error occured while parsing the file\nXml file Line Number: " + ex.getLineNumber() + "\n" + ex.getMessage();
+            return -1;
         } catch (SAXException | ParserConfigurationException | TransformerException ex) {
-            Logger.getLogger(CoCCleanUp.class.getName()).log(Level.SEVERE, null, ex);
+            errorMessage="An error occured";
+            return -1;
         } catch (IOException ex) {
-            System.err.println("The file: " + filename + " does not exists");
-            System.exit(0);
+            errorMessage = "The file: " + filename + " does not exists";
+            return -1;
         }
     }
 
@@ -129,5 +137,9 @@ public class CoCCleanUp {
             return true;
         }
         return false;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 }

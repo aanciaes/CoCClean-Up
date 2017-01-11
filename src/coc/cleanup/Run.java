@@ -45,7 +45,7 @@ public class Run {
         }
         
         CoCCleanUp clean = new CoCCleanUp(newFileName, write);
-        clean.cleanDocument(filename);
+        if(clean.cleanDocument(filename)<0)
+            System.out.println(clean.getErrorMessage());
     }
-
 }
