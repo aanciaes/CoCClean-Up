@@ -15,6 +15,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -92,11 +93,11 @@ public class CoCCleanUp {
 
             return 0;
 
-        }catch (SAXParseException ex){
+        } catch (SAXParseException ex) {
             errorMessage = "\nAn error occured while parsing the file\nXml file Line Number: " + ex.getLineNumber() + "\n" + ex.getMessage();
             return -1;
-        } catch (SAXException | ParserConfigurationException | TransformerException ex) {
-            errorMessage="An error occured";
+        } catch (SAXException | ParserConfigurationException | TransformerException | DOMException ex) {
+            errorMessage = "An error occured";
             return -1;
         } catch (IOException ex) {
             errorMessage = "The file: " + filename + " does not exists";
